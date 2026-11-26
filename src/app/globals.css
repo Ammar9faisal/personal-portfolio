@@ -21,3 +21,8 @@
 .os-host{position:fixed;inset:0;z-index:20}
 .os-arriving{animation:os-arrive .18s ease-out}
 @keyframes os-arrive{from{opacity:0}to{opacity:1}}
+
+/* Keep the room inside the browser's content width, including windowed layouts. */
+html,body{width:100%;max-width:100%;overflow-x:clip}
+.site,.room-layer{width:100%;min-width:0;max-width:100%}
+.site{overflow-x:clip}

@@ -26,6 +26,7 @@ const animationStyle = {
 export default function WorkshopScene({ onObjectClick, onOpenExperience, printerStore, active = true, computerGlance = false }: { onObjectClick: (id: SceneObjectId, anticipate?: boolean) => void; computerGlance?: boolean; onOpenExperience: () => void; printerStore: PrinterStore; active?: boolean }) {
   const [paused, setPaused] = useState(false);
   const [panel, setPanel] = useState<PanelId | null>(null);
+  const [tooltipsDismissed, setTooltipsDismissed] = useState(false);
   const [reaction, setReaction] = useState(0);
   const trigger = useRef<HTMLButtonElement | null>(null);
   const root = useRef<HTMLDivElement>(null);
@@ -45,8 +46,11 @@ export default function WorkshopScene({ onObjectClick, onOpenExperience, printer
     else Array.from(root.current?.querySelectorAll<HTMLButtonElement>("button") || []).find(button => button.getAttribute("aria-label") === origin?.getAttribute("aria-label") && button.getClientRects().length)?.focus();
   }, []);
   useEffect(() => {
-    if (!panel || !active) return;
-    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") { event.preventDefault(); closePanel(); } };
+    if (!active) return;
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") {
+      setTooltipsDismissed(true);
+      if (panel) { event.preventDefault(); closePanel(); }
+    } };
     window.addEventListener("keydown", escape);
     return () => window.removeEventListener("keydown", escape);
   }, [panel, closePanel, active]);
@@ -71,10 +75,12 @@ export default function WorkshopScene({ onObjectClick, onOpenExperience, printer
         <img className={styles.artwork} src="/workshop/scene.webp" width={sceneSettings.width} height={sceneSettings.height}
           alt="Cozy inventor's workshop with a computer, robot, chessboard, 3D printer and robotics equipment" draggable={false} fetchPriority="high"/>
         <span data-monitor-screen aria-hidden="true" className={styles.monitorTarget} style={bounds({x:797,y:330,width:123,height:100})}/><Atmosphere reaction={reaction} eyes={eyes}/><PrinterLayer store={printer}/><div className={styles.shade}/><Lighting/>
-        {sceneObjects.map(object => <button key={object.id} data-camera-ui className={styles.hotspot} data-object={object.id} style={bounds(object)} aria-label={object.action}
+        {sceneObjects.map(object => <button key={object.id} data-camera-ui className={styles.hotspot} data-object={object.id} data-label-dismissed={tooltipsDismissed || undefined}
+          onPointerEnter={() => setTooltipsDismissed(false)} onPointerLeave={() => setTooltipsDismissed(false)} onFocus={() => setTooltipsDismissed(false)}
+          style={bounds(object)} aria-label={object.action} aria-describedby={`${panelId}-${object.id}-label`}
           aria-expanded={isPanel(object.id) ? panel === object.id : undefined} aria-haspopup={isPanel(object.id) ? "dialog" : undefined}
           aria-controls={panel === object.id ? panelId : undefined} onClick={event => activate(object.id, event.currentTarget)}>
-          <span className={styles.label}>{object.action}</span><span className={styles.marker} aria-hidden="true">+</span>
+          <span id={`${panelId}-${object.id}-label`} role="tooltip" className={styles.label}>{object.name}</span><span className={styles.marker} aria-hidden="true">+</span>
           {object.id === "printer" && <PrinterBadge store={printer}/>}
         </button>)}
       </div>

@@ -1,8 +1,12 @@
 .workshop { position: relative; width: 100%; margin: auto; }
 .viewport {
   position: relative;
-  height: max(480px, calc(100vw * 941 / 1672));
-  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 1672 / 941;
+  height: auto;
+  min-height: 480px;
+  /* Clip the cover crop without creating a focus-scrollable scene container. */
+  overflow: clip;
   container-type: size;
   background: #1d2320;
   isolation: isolate;
@@ -59,30 +63,34 @@
 }
 .hotspot {
   position: absolute; z-index: 2; padding: 0; border: 1px solid transparent;
-  border-radius: 6px; background: transparent; color: #fff2d7;
+  border-radius: 6px; background: transparent; color: #fff2d7; cursor: pointer;
   transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
   touch-action: manipulation;
 }
 .hotspot:hover, .hotspot:focus-visible {
-  z-index: 3; border-color: #e4c997a6; background: #ffde9a08;
-  box-shadow: inset 0 0 20px #f8cd7d0c, 0 0 14px #e9bd6e14;
+  z-index: 3; border-color: #e4c997b8;
+  background: radial-gradient(ellipse at center, #ffdc951a, #ffdc9505 70%, transparent);
+  box-shadow: inset 0 0 24px #f8cd7d14, 0 0 22px #e9bd6e30;
 }
 .hotspot:focus-visible { outline: 2px solid #fff0c5; outline-offset: 5px; }
 .label {
   position: absolute; left: 50%; bottom: calc(100% + 10px); transform: translateX(-50%);
   width: max-content; max-width: 240px; padding: 8px 11px;
   border: 1px solid #9e885b; border-radius: 5px; background: #17211cf5;
-  font-size: 12px; line-height: 1.4; opacity: 0; pointer-events: none;
-  transition: opacity .2s ease;
+  font-size: 14px; font-weight: 550; line-height: 1.4; opacity: 0; visibility: hidden; pointer-events: auto;
+  transition: opacity .16s ease;
 }
+.label::after { content: ""; position: absolute; top: 100%; left: 0; right: 0; height: 12px; }
 .hotspot[data-object="tools"] .label { left: 10px; transform: none; }
 .hotspot[data-object="printer"] .label { left: auto; right: 8px; transform: none; }
 .marker {
   position: absolute; right: 6px; bottom: 6px; display: grid; place-items: center;
   width: 22px; height: 22px; border: 1px solid #d6bc85a0; border-radius: 50%;
-  background: #15211cdd; font-size: 14px; opacity: 0; pointer-events: none;
+  background: #15211cdd; font-size: 14px; opacity: .5; pointer-events: none;
+  transition: opacity .16s ease;
 }
-.hotspot:is(:hover, :focus-visible) :is(.label, .marker) { opacity: 1; }
+.hotspot:is(:hover, :focus-visible) :is(.label, .marker) { opacity: 1; visibility: visible; }
+.hotspot[data-label-dismissed="true"] .label { opacity: 0; visibility: hidden; }
 .caption {
   position: absolute; z-index: 4; bottom: 20px; right: 24px;
   display: flex; align-items: center; gap: 18px; color: #e2dece;
@@ -103,7 +111,7 @@
   .objectNav span { color: #cbb17a; }
 }
 @media (max-width: 850px) {
-  .viewport { height: clamp(320px, 65vw, 520px); }
+  .viewport { min-height: 0; height: clamp(320px, 65vw, 520px); }
   .hotspot { display: none; }
   .shade { background: linear-gradient(0deg, #08100f80, transparent 25%); }
   .caption { left: 20px; right: 20px; bottom: 16px; justify-content: space-between; }
@@ -112,7 +120,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .rain, .lamplight, .scan, .crtPrompt { animation: none; }
-  .hotspot, .label, .monitorGlow { transition: none; }
+  .hotspot, .label, .marker, .monitorGlow { transition: none; }
   .rain { opacity: .12; }
   .scan { display: none; }
   .motionToggle { display: none; }

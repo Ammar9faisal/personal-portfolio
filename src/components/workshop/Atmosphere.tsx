@@ -1,4 +1,5 @@
 import { useId, type CSSProperties } from "react";
+import CrtActivity from "./CrtActivity";
 import { sceneSettings } from "./settings";
 import styles from "./WorkshopScene.module.css";
 
@@ -14,10 +15,6 @@ export default function Atmosphere({ reaction, eyes }: { reaction: number; eyes:
         <clipPath id={`${id}-screen`}>
           <path d="M802 330L920 332L917 429L797 426Z" />
         </clipPath>
-        <radialGradient id={`${id}-amber`}>
-          <stop stopColor="#ffc16b" stopOpacity=".4" />
-          <stop offset="1" stopColor="#ffc16b" stopOpacity="0" />
-        </radialGradient>
         <radialGradient id={`${id}-phosphor`}>
           <stop stopColor="#bad5a1" stopOpacity=".17" />
           <stop offset="1" stopColor="#bad5a1" stopOpacity="0" />
@@ -36,16 +33,12 @@ export default function Atmosphere({ reaction, eyes }: { reaction: number; eyes:
           />
         ))}
       </g>
-      <g className={styles.lamplight}>
-        <ellipse cx="784" cy="365" rx="185" ry="150" fill={`url(#${id}-amber)`} />
-        <ellipse cx="823" cy="506" rx="225" ry="42" fill={`url(#${id}-amber)`} />
-      </g>
-      <ellipse cx="1610" cy="178" rx="105" ry="140" fill={`url(#${id}-amber)`} opacity=".55" />
       <g className={styles.monitorGlow}>
         <ellipse cx="856" cy="385" rx="102" ry="100" fill={`url(#${id}-phosphor)`} />
         <g clipPath={`url(#${id}-screen)`}>
           <path d="M795 328H923V431H795Z" fill={`url(#${id}-scanlines)`} />
           <path className={styles.scan} d="M795 329H923V337H795Z" fill="#c4dcaa" fillOpacity=".075" />
+          <CrtActivity/>
           <g className={styles.crtPrompt} stroke="#bccf9c" strokeWidth="2" opacity=".3">
             <path d="m811 398 4 3-4 3m10 0h7" />
           </g>
@@ -61,11 +54,6 @@ export default function Atmosphere({ reaction, eyes }: { reaction: number; eyes:
           <g className={styles.eyeLeft}><path d="M1092 404h5v3h2v8h-2v3h-5v-2h-2v-9h2Z"/></g>
           <g className={styles.eyeRight}><path d="M1125 406h5v2h2v9h-2v2h-5v-2h-2v-9h2Z"/></g>
         </g>
-      </g>
-      <g>
-        {sceneSettings.leds.map((led, index) => <rect key={index} className={styles.electronicsLed}
-          x={led.x - 1.2} y={led.y - 1} width="2.4" height="2" fill={led.color}
-          style={{ animationDuration: `${led.seconds}s`, animationDelay: `${led.delay}s` }}/>)}
       </g>
       {reaction > 0 && <g key={reaction} className={styles.robotReaction} fill="none" stroke="#9cded9" strokeWidth="1.5">
         <ellipse cx="1112" cy="412" rx="45" ry="30"/><path d="m1100 352 2-7m34 5 3-6"/>

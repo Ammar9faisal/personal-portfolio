@@ -14,7 +14,7 @@ export function useRobotIdle(suspended: boolean, computerGlance: boolean) {
     const rest = () => {
       setEyes({ gaze: 0, blink: false });
       later(() => {
-        if (Math.random() < .6) {
+        if (Math.random() < .75) {
           setEyes({ gaze: Math.random() < .5 ? -1 : 1, blink: false });
           later(rest, between(sceneSettings.robot.lookMs));
         } else {

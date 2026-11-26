@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import Atmosphere from "./Atmosphere";
+import Lighting from "./Lighting";
 import { useRobotIdle } from "./useRobotIdle";
 import WorkshopPanel from "./WorkshopPanel";
 import PrinterLayer, { PrinterBadge } from "./PrinterLayer";
@@ -69,7 +70,7 @@ export default function WorkshopScene({ onObjectClick, onOpenExperience, printer
       <div className={styles.stage}>
         <img className={styles.artwork} src="/workshop/scene.webp" width={sceneSettings.width} height={sceneSettings.height}
           alt="Cozy inventor's workshop with a computer, robot, chessboard, 3D printer and robotics equipment" draggable={false} fetchPriority="high"/>
-        <span data-monitor-screen aria-hidden="true" className={styles.monitorTarget} style={bounds({x:797,y:330,width:123,height:100})}/><Atmosphere reaction={reaction} eyes={eyes}/><PrinterLayer store={printer}/><div className={styles.shade}/>
+        <span data-monitor-screen aria-hidden="true" className={styles.monitorTarget} style={bounds({x:797,y:330,width:123,height:100})}/><Atmosphere reaction={reaction} eyes={eyes}/><PrinterLayer store={printer}/><div className={styles.shade}/><Lighting/>
         {sceneObjects.map(object => <button key={object.id} data-camera-ui className={styles.hotspot} data-object={object.id} style={bounds(object)} aria-label={object.action}
           aria-expanded={isPanel(object.id) ? panel === object.id : undefined} aria-haspopup={isPanel(object.id) ? "dialog" : undefined}
           aria-controls={panel === object.id ? panelId : undefined} onClick={event => activate(object.id, event.currentTarget)}>

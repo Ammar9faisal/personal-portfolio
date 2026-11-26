@@ -19,14 +19,25 @@
 .printerLayer { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .rain { stroke: #a0c5e6; stroke-width: 1.2; opacity: .24; animation: rainfall 3s linear infinite; }
 @keyframes rainfall { from { transform: translate(5px, -80px); } to { transform: translate(-9px, 160px); } }
-.lamplight { opacity: .82; animation: lamplight var(--lamp-duration, 19s) ease-in-out infinite; }
-/* Uneven, soft dips in the desk light's pool; no hard flashes or room-wide dimming. */
+.lighting { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+.lamplight { opacity: .85; animation: lamplight var(--lamp-duration, 13.8s) ease-in-out var(--lamp-delay, 0s) infinite; }
+.lampDim { opacity: 0; animation: lamp-dim var(--lamp-duration, 13.8s) ease-in-out var(--lamp-delay, 0s) infinite; }
+/* Dim the baked light locally as the additive warmth recedes; retain all texture. */
 @keyframes lamplight {
-  0%, 7%, 27%, 52%, 81%, 100% { opacity: .82; }
-  12%, 16% { opacity: .43; }
-  60%, 64% { opacity: .58; }
-  69% { opacity: .74; }
-  72% { opacity: .54; }
+  0%, 16%, 40%, 65%, 100% { opacity: .85; }
+  20%, 23% { opacity: .2; }
+  73%, 77% { opacity: .36; }
+  82% { opacity: .68; }
+  85% { opacity: .3; }
+  94% { opacity: .85; }
+}
+@keyframes lamp-dim {
+  0%, 16%, 40%, 65%, 100% { opacity: 0; }
+  20%, 23% { opacity: .42; }
+  73%, 77% { opacity: .3; }
+  82% { opacity: .08; }
+  85% { opacity: .34; }
+  94% { opacity: 0; }
 }
 .monitorGlow { opacity: .8; transition: opacity .3s ease; }
 .scan { opacity: 0; animation: screen-scan var(--scan-duration, 9s) linear infinite; }
@@ -35,8 +46,11 @@
 @keyframes prompt { 0%, 100% { opacity: .16; } 50% { opacity: .35; } }
 .robotEyes { fill: #79d4e1; transform: translateX(calc(var(--gaze, 0) * 3px)); transition: transform 150ms ease-in-out; }
 .eyeLeft, .eyeRight { transform-box: fill-box; transform-origin: center; transform: scaleY(var(--eye-height, 1)); transition: transform 65ms ease; }
-.electronicsLed { opacity: .32; animation: electronics-led 19s linear infinite; }
-@keyframes electronics-led { 0%, 17%, 20%, 47%, 48.5%, 76%, 80%, 100% { opacity: .24; } 18%, 19%, 47.6%, 77%, 79% { opacity: .78; } }
+.electronicsLed { opacity: .5; animation: electronics-led 9s linear infinite; }
+@keyframes electronics-led {
+  0%, 12%, 21%, 45%, 51%, 74%, 85%, 100% { opacity: .08; }
+  13%, 19%, 46%, 49%, 75%, 82% { opacity: 1; }
+}
 .stage:has([data-object="computer"]:is(:hover, :focus-visible)) .monitorGlow { opacity: 1; }
 
 .shade {
@@ -156,7 +170,7 @@
 .printButtons button { flex: 1; min-height: 44px; border: 1px solid #8b9871; border-radius: 3px; background: #303e29; color: #eee4cd; }
 .printButtons button:hover:not(:disabled) { background: #526142; }
 .printButtons button:disabled { opacity: .45; cursor: default; }
-.workshop[data-paused="true"] .atmosphere * { animation-play-state: paused !important; }
+.workshop[data-paused="true"] :is(.atmosphere, .lighting) * { animation-play-state: paused !important; }
 @media (max-width: 850px) {
   .caption { flex-direction: column; align-items: flex-start; gap: 9px; }
   .caption > span:first-child { max-width: none; }
@@ -167,7 +181,7 @@
   .square > span { font-size: 29px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .atmosphere * { animation: none !important; }
+  .atmosphere *, .lighting * { animation: none !important; }
   .robotEyes, .eyeLeft, .eyeRight { transform: none; transition: none; }
   .robotReaction { opacity: .18; }
 }
@@ -175,3 +189,10 @@
 .monitorTarget { position: absolute; pointer-events: none; }
 
 .workshop[data-paused="true"] .robotEyes, .workshop[data-paused="true"] .eyeLeft, .workshop[data-paused="true"] .eyeRight { transition: none; }
+
+/* Reveal a clipping rectangle, keeping the terminal glyphs at their original size. */
+.terminalLine { opacity: 0; animation: terminal-message var(--terminal-cycle) linear var(--terminal-delay, 0s) infinite; }
+.terminalReveal { transform: scaleX(0); transform-box: fill-box; transform-origin: left center; animation: terminal-type var(--terminal-cycle) steps(16, end) var(--terminal-delay, 0s) infinite; }
+@keyframes terminal-message { 0%, 9%, 24%, 100% { opacity: 0; } 10%, 21% { opacity: .95; } }
+@keyframes terminal-type { 0%, 10% { transform: scaleX(0); } 16%, 24%, 100% { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) { .terminalLine { display: none; } }

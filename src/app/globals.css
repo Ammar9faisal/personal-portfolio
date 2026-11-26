@@ -13,3 +13,11 @@
   .workshop-room .intro>p:not(.eyebrow){max-width:420px;font-size:14px}
   .workshop-room .room-footer{position:static;padding:14px 20px;background:#111a15}
 }
+
+.room-layer[hidden]{display:none}
+.camera-moving .room-wrap{overflow:visible}
+.camera-moving .intro,.camera-moving .site-top,.camera-moving .room-footer,.camera-moving [data-camera-ui]{opacity:0;pointer-events:none}
+.intro,.site-top,.room-footer,[data-camera-ui]{transition:opacity .16s ease}
+.os-host{position:fixed;inset:0;z-index:20}
+.os-arriving{animation:os-arrive .18s ease-out}
+@keyframes os-arrive{from{opacity:0}to{opacity:1}}

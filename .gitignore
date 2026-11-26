@@ -6,3 +6,6 @@ out/
 .env*
 !.env.example
 npm-debug.log*
+
+# Local Vercel project state and downloaded environment files
+.vercel/

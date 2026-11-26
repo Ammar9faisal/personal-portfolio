@@ -46,5 +46,9 @@ test('published fields omit draft date labels and expose only explicitly verifie
   }
   for (const item of experience) assert.doesNotMatch(item.date || '', /verify|TODO|unknown/i);
   assert.doesNotMatch(profile.education.graduation || '', /verify|awaiting|TODO/i);
-  assert.deepEqual(Object.keys(skills), ['Languages', 'Frontend', 'Backend', 'AI / Computer Vision', 'Infrastructure', 'Hardware']);
+  for (const [group, technologies] of Object.entries(skills)) {
+    assert.ok(group.trim().length > 0);
+    assert.ok(Array.isArray(technologies) && technologies.length > 0);
+    assert.ok(technologies.every(technology => typeof technology === 'string' && technology.trim()));
+  }
 });

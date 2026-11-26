@@ -19,16 +19,26 @@
 .printerLayer { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .rain { stroke: #a0c5e6; stroke-width: 1.2; opacity: .24; animation: rainfall 3s linear infinite; }
 @keyframes rainfall { from { transform: translate(5px, -80px); } to { transform: translate(-9px, 160px); } }
-.lamplight { opacity: .7; animation: lamplight var(--lamp-duration, 12s) ease-in-out infinite alternate; }
-@keyframes lamplight { 0% { opacity: .72; } 31% { opacity: .88; } 48% { opacity: .8; } 63% { opacity: .96; } 100% { opacity: .86; } }
-.monitorGlow { opacity: .65; transition: opacity .3s ease; }
-.scan { animation: screen-scan var(--scan-duration, 9s) linear infinite; }
-@keyframes screen-scan { to { transform: translateY(104px); } }
+.lamplight { opacity: .82; animation: lamplight var(--lamp-duration, 19s) ease-in-out infinite; }
+/* Uneven, soft dips in the desk light's pool; no hard flashes or room-wide dimming. */
+@keyframes lamplight {
+  0%, 7%, 27%, 52%, 81%, 100% { opacity: .82; }
+  12%, 16% { opacity: .43; }
+  60%, 64% { opacity: .58; }
+  69% { opacity: .74; }
+  72% { opacity: .54; }
+}
+.monitorGlow { opacity: .8; transition: opacity .3s ease; }
+.scan { opacity: 0; animation: screen-scan var(--scan-duration, 9s) linear infinite; }
+@keyframes screen-scan { 0% { opacity: 0; transform: translateY(-8px); } 8%, 90% { opacity: 1; } 100% { opacity: 0; transform: translateY(104px); } }
 .crtPrompt { animation: prompt var(--prompt-duration, 7s) ease-in-out infinite; }
 @keyframes prompt { 0%, 100% { opacity: .16; } 50% { opacity: .35; } }
-.robotLight { opacity: .06; transition: opacity .3s ease; }
+.robotEyes { fill: #79d4e1; transform: translateX(calc(var(--gaze, 0) * 3px)); transition: transform 150ms ease-in-out; }
+.eyeLeft, .eyeRight { transform-box: fill-box; transform-origin: center; transform: scaleY(var(--eye-height, 1)); transition: transform 65ms ease; }
+.electronicsLed { opacity: .32; animation: electronics-led 19s linear infinite; }
+@keyframes electronics-led { 0%, 17%, 20%, 47%, 48.5%, 76%, 80%, 100% { opacity: .24; } 18%, 19%, 47.6%, 77%, 79% { opacity: .78; } }
 .stage:has([data-object="computer"]:is(:hover, :focus-visible)) .monitorGlow { opacity: 1; }
-.stage:has([data-object="robot"]:is(:hover, :focus-visible)) .robotLight { opacity: .45; }
+
 .shade {
   position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(90deg, #09110fb8, #09110f22 28%, transparent 45%), linear-gradient(0deg, #08100f80, transparent 20%);
@@ -88,15 +98,13 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .rain, .lamplight, .scan, .crtPrompt { animation: none; }
-  .hotspot, .label, .monitorGlow, .robotLight { transition: none; }
+  .hotspot, .label, .monitorGlow { transition: none; }
   .rain { opacity: .12; }
   .scan { display: none; }
   .motionToggle { display: none; }
   .stillLabel { display: inline; color: #d5ccae; font-size: 10px; }
 }
 
-.robotLids { opacity: 0; animation: robot-blink var(--blink-duration, 9.5s) ease-in-out infinite; }
-@keyframes robot-blink { 0%, 42%, 46%, 100% { opacity: 0; } 44% { opacity: .97; } }
 .robotReaction { opacity: 0; animation: robot-hello var(--reaction-duration, 760ms) ease-out both; }
 @keyframes robot-hello { 0% { opacity: 0; } 25% { opacity: .5; } 100% { opacity: 0; } }
 .printerBadge { position: absolute; right: 5px; bottom: 6px; background: #17211ce8; border: 1px solid #9e885b80; border-radius: 3px; color: #d8bd87; font-size: 10px; padding: 3px 7px; pointer-events: none; }
@@ -160,6 +168,10 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .atmosphere * { animation: none !important; }
-  .robotLids { opacity: 0; }
+  .robotEyes, .eyeLeft, .eyeRight { transform: none; transition: none; }
   .robotReaction { opacity: .18; }
 }
+
+.monitorTarget { position: absolute; pointer-events: none; }
+
+.workshop[data-paused="true"] .robotEyes, .workshop[data-paused="true"] .eyeLeft, .workshop[data-paused="true"] .eyeRight { transition: none; }

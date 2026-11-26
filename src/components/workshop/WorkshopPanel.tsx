@@ -18,7 +18,7 @@ export default function WorkshopPanel({ panel, id, onClose, onExperience, onPawn
     close.current?.focus({ preventScroll: true });
     if (window.matchMedia("(max-width: 850px)").matches) root.current?.scrollIntoView({ block: "nearest" });
   }, [panel]);
-  return <aside ref={root} className={styles.panel} data-panel={panel} id={id} role="dialog" aria-modal="false" aria-labelledby={`${id}-title`}>
+  return <aside ref={root} data-camera-ui className={styles.panel} data-panel={panel} id={id} role="dialog" aria-modal="false" aria-labelledby={`${id}-title`}>
     <header><span className={styles.panelEyebrow}>WORKSHOP / {panel === "chess" ? "CHESSBOARD" : panel.toUpperCase()}</span><button ref={close} className={styles.close} onClick={onClose} aria-label="Close workshop panel">×</button><h2 id={`${id}-title`}>{copy.title}</h2></header>
     {panel === "robot" && <>
       <p className={styles.greeting}>{workshopDialogue.robot.greeting}</p><p>{copy.body}</p>

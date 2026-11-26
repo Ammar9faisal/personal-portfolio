@@ -1,6 +1,7 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { resolve, relative, sep } from 'node:path';
 import { projects } from '../src/data/portfolio.ts';
+import { sceneSettings } from '../src/components/workshop/settings.ts';
 
 const root = resolve('public');
 const problems = [];
@@ -24,7 +25,7 @@ async function checkLocalAsset(url) {
   if (!(await stat(path)).isFile()) throw new Error(`Asset is not a file: ${url}`);
 }
 await walk(root);
-for (const url of ['/workshop/scene.webp', ...projects.flatMap(project => project.screenshot ? [project.screenshot.src] : [])]) {
+for (const url of ['/workshop/scene.webp', sceneSettings.audioSrc, ...projects.flatMap(project => project.screenshot ? [project.screenshot.src] : [])]) {
   try { await checkLocalAsset(url); } catch { problems.push(`Missing or invalid local asset: ${url}`); }
 }
 const scene = await readFile(resolve(root, 'workshop/scene.webp'));

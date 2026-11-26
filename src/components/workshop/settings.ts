@@ -11,7 +11,7 @@ export const sceneSettings = {
     { x: 377, y: 478, color: "#b6cc80", seconds: 23.9, delay: -6.8 },
   ],
   reactionMs: 760,
-  audioGain: 0.035, audioBufferSeconds: 3,
+  audioSrc: "/audio/rain.mp3", audioVolume: 0.28,
 } as const;
 
 export const sceneObjects = [

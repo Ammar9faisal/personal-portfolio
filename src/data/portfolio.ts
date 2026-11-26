@@ -537,7 +537,24 @@ export const publicLinks: {
     verified: true;
   };
   resume?: VerifiedLink;
-} = {};
+} = {
+  github: {
+    url: "https://github.com/Ammar9faisal",
+    verified: true,
+  },
+  linkedin: {
+    url: "https://www.linkedin.com/in/ammar9faisal/",
+    verified: true,
+  },
+  devpost: {
+    url: "https://devpost.com/Ammar9faisal",
+    verified: true,
+  },
+  email: {
+    address: "ammarfaisal5002@gmail.com",
+    verified: true,
+  },
+};
 
 // ============================================================
 // PROFILE

@@ -64,6 +64,7 @@ export default function WorkshopScene({ onObjectClick, onOpenExperience, printer
   function isPanel(id: SceneObjectId): id is PanelId { return id === "robot" || id === "printer" || id === "chess"; }
 
   return <div ref={root} className={styles.workshop} data-paused={paused || inactive || !active} data-inactive={inactive} style={animationStyle}>
+    <audio ref={audio.element} src={sceneSettings.audioSrc} preload="none" loop hidden aria-hidden="true"/>
     <div ref={viewport} data-workshop-viewport className={styles.viewport}>
       <div className={styles.stage}>
         <img className={styles.artwork} src="/workshop/scene.webp" width={sceneSettings.width} height={sceneSettings.height}
@@ -81,7 +82,7 @@ export default function WorkshopScene({ onObjectClick, onOpenExperience, printer
         <div className={styles.ambienceControls}>
           <button className={styles.motionToggle} aria-pressed={paused} onClick={() => setPaused(value => !value)}>{paused ? "Resume motion" : "Pause motion"}</button>
           <span className={styles.stillLabel}>Reduced motion · still ambience</span>
-          <button className={styles.audioToggle} aria-pressed={audio.enabled} disabled={audio.busy} onClick={audio.toggle} title="Optional soft synthesized rain; off by default">{audio.enabled ? "Mute rain audio" : "Enable rain audio"}</button>
+          <button className={styles.audioToggle} aria-pressed={audio.enabled} disabled={audio.busy} onClick={audio.toggle} title="Optional rain recording; off by default">{audio.enabled ? "Mute rain audio" : "Enable rain audio"}</button>
         </div>
       </div>
     </div>

@@ -1,0 +1,165 @@
+.workshop { position: relative; width: 100%; margin: auto; }
+.viewport {
+  position: relative;
+  height: max(480px, calc(100vw * 941 / 1672));
+  overflow: hidden;
+  container-type: size;
+  background: #1d2320;
+  isolation: isolate;
+}
+.stage {
+  position: absolute;
+  width: max(100cqw, calc(100cqh * 1672 / 941));
+  aspect-ratio: 1672 / 941;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+}
+.artwork { display: block; width: 100%; height: 100%; user-select: none; }
+.atmosphere { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.printerLayer { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.rain { stroke: #a0c5e6; stroke-width: 1.2; opacity: .24; animation: rainfall 3s linear infinite; }
+@keyframes rainfall { from { transform: translate(5px, -80px); } to { transform: translate(-9px, 160px); } }
+.lamplight { opacity: .7; animation: lamplight var(--lamp-duration, 12s) ease-in-out infinite alternate; }
+@keyframes lamplight { 0% { opacity: .72; } 31% { opacity: .88; } 48% { opacity: .8; } 63% { opacity: .96; } 100% { opacity: .86; } }
+.monitorGlow { opacity: .65; transition: opacity .3s ease; }
+.scan { animation: screen-scan var(--scan-duration, 9s) linear infinite; }
+@keyframes screen-scan { to { transform: translateY(104px); } }
+.crtPrompt { animation: prompt var(--prompt-duration, 7s) ease-in-out infinite; }
+@keyframes prompt { 0%, 100% { opacity: .16; } 50% { opacity: .35; } }
+.robotLight { opacity: .06; transition: opacity .3s ease; }
+.stage:has([data-object="computer"]:is(:hover, :focus-visible)) .monitorGlow { opacity: 1; }
+.stage:has([data-object="robot"]:is(:hover, :focus-visible)) .robotLight { opacity: .45; }
+.shade {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(90deg, #09110fb8, #09110f22 28%, transparent 45%), linear-gradient(0deg, #08100f80, transparent 20%);
+}
+.hotspot {
+  position: absolute; z-index: 2; padding: 0; border: 1px solid transparent;
+  border-radius: 6px; background: transparent; color: #fff2d7;
+  transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
+  touch-action: manipulation;
+}
+.hotspot:hover, .hotspot:focus-visible {
+  z-index: 3; border-color: #e4c997a6; background: #ffde9a08;
+  box-shadow: inset 0 0 20px #f8cd7d0c, 0 0 14px #e9bd6e14;
+}
+.hotspot:focus-visible { outline: 2px solid #fff0c5; outline-offset: 5px; }
+.label {
+  position: absolute; left: 50%; bottom: calc(100% + 10px); transform: translateX(-50%);
+  width: max-content; max-width: 240px; padding: 8px 11px;
+  border: 1px solid #9e885b; border-radius: 5px; background: #17211cf5;
+  font-size: 12px; line-height: 1.4; opacity: 0; pointer-events: none;
+  transition: opacity .2s ease;
+}
+.hotspot[data-object="tools"] .label { left: 10px; transform: none; }
+.hotspot[data-object="printer"] .label { left: auto; right: 8px; transform: none; }
+.marker {
+  position: absolute; right: 6px; bottom: 6px; display: grid; place-items: center;
+  width: 22px; height: 22px; border: 1px solid #d6bc85a0; border-radius: 50%;
+  background: #15211cdd; font-size: 14px; opacity: 0; pointer-events: none;
+}
+.hotspot:is(:hover, :focus-visible) :is(.label, .marker) { opacity: 1; }
+.caption {
+  position: absolute; z-index: 4; bottom: 20px; right: 24px;
+  display: flex; align-items: center; gap: 18px; color: #e2dece;
+  font-size: 11px; text-shadow: 0 1px 3px #000;
+}
+.motionToggle { color: #eee4cc; background: #15211ce8; border: 1px solid #857852; border-radius: 4px; padding: 8px 10px; font-size: 11px; }
+.motionToggle:hover { background: #334034; }
+.stillLabel { display: none; }
+.objectNav { display: none; }
+@media (max-width: 850px), (pointer: coarse) {
+  .objectNav { display: flex; gap: 8px; flex-wrap: wrap; padding: 16px 20px; background: #111a15; }
+  .objectNav button {
+    display: flex; align-items: center; gap: 14px; justify-content: space-between; flex: 1 0 120px;
+    min-height: 44px; padding: 10px 12px; color: #e1dfca; font-size: 12px;
+    background: #1c2920; border: 1px solid #4c5742; border-radius: 5px;
+  }
+  .objectNav button:hover { background: #2c3a2c; border-color: #b8a67b; }
+  .objectNav span { color: #cbb17a; }
+}
+@media (max-width: 850px) {
+  .viewport { height: clamp(320px, 65vw, 520px); }
+  .hotspot { display: none; }
+  .shade { background: linear-gradient(0deg, #08100f80, transparent 25%); }
+  .caption { left: 20px; right: 20px; bottom: 16px; justify-content: space-between; }
+  .caption > span:first-child { max-width: 180px; line-height: 1.5; }
+
+}
+@media (prefers-reduced-motion: reduce) {
+  .rain, .lamplight, .scan, .crtPrompt { animation: none; }
+  .hotspot, .label, .monitorGlow, .robotLight { transition: none; }
+  .rain { opacity: .12; }
+  .scan { display: none; }
+  .motionToggle { display: none; }
+  .stillLabel { display: inline; color: #d5ccae; font-size: 10px; }
+}
+
+.robotLids { opacity: 0; animation: robot-blink var(--blink-duration, 9.5s) ease-in-out infinite; }
+@keyframes robot-blink { 0%, 42%, 46%, 100% { opacity: 0; } 44% { opacity: .97; } }
+.robotReaction { opacity: 0; animation: robot-hello var(--reaction-duration, 760ms) ease-out both; }
+@keyframes robot-hello { 0% { opacity: 0; } 25% { opacity: .5; } 100% { opacity: 0; } }
+.printerBadge { position: absolute; right: 5px; bottom: 6px; background: #17211ce8; border: 1px solid #9e885b80; border-radius: 3px; color: #d8bd87; font-size: 10px; padding: 3px 7px; pointer-events: none; }
+.hotspot[data-object="printer"] .marker { display: none; }
+.ambienceControls { display: flex; align-items: center; gap: 8px; }
+.audioToggle { color: #eee4cc; background: #15211ce8; border: 1px solid #857852; border-radius: 4px; padding: 8px 10px; font-size: 11px; min-height: 36px; }
+.audioToggle:hover { background: #334034; }
+.audioToggle:disabled { opacity: .6; cursor: wait; }
+.audioError { margin: 0; padding: 12px 20px; background: #15211c; color: #d7c49d; font-size: 13px; }
+.panel { position: absolute; z-index: 10; bottom: 84px; right: 24px; width: min(370px, calc(100% - 48px)); max-height: calc(100% - 110px); overflow: auto; overscroll-behavior: contain; padding: 0 20px 20px; border: 1px solid #a08b62; border-radius: 6px; color: #eee4d0; background: #18221bf7; box-shadow: 0 12px 36px #0007; scrollbar-width: thin; scrollbar-color: #7e8c68 #18221b; }
+.panel[data-panel="printer"] { left: 24px; right: auto; width: min(330px, calc(100% - 48px)); }
+.panel header { position: sticky; top: 0; z-index: 1; background: #18221b; padding: 18px 36px 12px 0; border-bottom: 1px solid #5c654d; }
+.panelEyebrow { font: 10px ui-monospace, monospace; letter-spacing: .14em; color: #b4a37c; }
+.panel h2 { font-size: 20px; letter-spacing: -.025em; line-height: 1.25; margin: 9px 0 0; }
+.close { position: absolute; top: 8px; right: -10px; width: 44px; height: 44px; border: 0; background: transparent; color: #e6dec9; font-size: 27px; }
+.close:hover { color: #fff4d3; background: #303e2c; }
+.panel p { color: #c1c9b8; font-size: 14px; line-height: 1.7; }
+.panel .greeting { color: #e5d2a5; }
+.panel .panelNote { padding: 12px 0; border-top: 1px solid #4a5940; font-size: 12px; color: #b6bba7; }
+.robotExperience { list-style: none; padding: 0; margin: 18px 0; }
+.robotExperience li { padding: 10px 0; border-top: 1px solid #4a5940; font-size: 12px; }
+.robotExperience strong { display: block; color: #d6dabb; font-size: 13px; font-weight: 550; }
+.robotExperience li > span { color: #aebda1; }
+.panelAction { display: block; width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #8b9871; border-radius: 3px; background: #3c4c32; color: #f1eedb; font-size: 13px; text-align: center; }
+.panelAction:hover { background: #526142; }
+.escapeHint { display: block; margin-top: 12px; font-size: 10px; color: #9faa93; }
+.printerStatus { display: flex; gap: 8px; align-items: center; color: #d4ba83 !important; font-size: 12px !important; }
+.printerStatus > span { width: 6px; height: 6px; border-radius: 50%; background: #cfb477; }
+.chessboard { display: grid; grid-template-rows: repeat(8, minmax(0, 1fr)); width: 100%; aspect-ratio: 1; border: 1px solid #9b9a78; margin-top: 16px; }
+.chessRow { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); min-height: 0; }
+.chessRow > div { min-width: 0; }
+.square { width: 100%; height: 100%; position: relative; display: grid; place-items: center; border: 0; border-radius: 0; padding: 0; }
+.lightSquare { background: #c6c8ac; }
+.darkSquare { background: #64754f; }
+.square > span { font-family: "Segoe UI Symbol", "Apple Symbols", serif; font-size: clamp(22px, 2vw, 30px); line-height: 1; }
+.whitePiece { color: #fff9e2; text-shadow: 0 1px 1px #21291b, 1px 0 1px #21291b, -1px 0 1px #21291b; }
+.blackPiece { color: #1a2517; }
+.square small { position: absolute; left: 2px; bottom: 1px; font: 8px ui-monospace, monospace; color: #263220; opacity: .8; }
+.square small[data-coordinate="rank"] { top: 1px; bottom: auto; }
+.square small[data-coordinate="file"] { left: auto; right: 2px; }
+.square:hover { box-shadow: inset 0 0 0 2px #efe2b1; }
+.square[aria-pressed="true"] { box-shadow: inset 0 0 0 3px #f0c36d; }
+.square:focus-visible { outline: 2px solid #fff5cb; outline-offset: -3px; z-index: 1; }
+.panel .squareStatus { margin: 10px 0; font: 12px ui-monospace, monospace; color: #c9c6a4; min-height: 32px; }
+.printProgress { display: flex; align-items: center; gap: 12px; margin: 14px 0; }
+.printProgress progress { width: 100%; min-width: 0; height: 8px; accent-color: #d1ad68; }
+.printProgress output { font: 13px ui-monospace, monospace; color: #e2c990; min-width: 38px; text-align: right; }
+.printButtons { display: flex; gap: 10px; margin: 18px 0; }
+.printButtons button { flex: 1; min-height: 44px; border: 1px solid #8b9871; border-radius: 3px; background: #303e29; color: #eee4cd; }
+.printButtons button:hover:not(:disabled) { background: #526142; }
+.printButtons button:disabled { opacity: .45; cursor: default; }
+.workshop[data-paused="true"] .atmosphere * { animation-play-state: paused !important; }
+@media (max-width: 850px) {
+  .caption { flex-direction: column; align-items: flex-start; gap: 9px; }
+  .caption > span:first-child { max-width: none; }
+  .ambienceControls { flex-wrap: wrap; }
+  .audioToggle, .motionToggle { min-height: 40px; }
+  .panel { position: relative; right: auto; bottom: auto; max-height: none; width: auto; margin: 0 20px 20px; }
+  .panel[data-panel="printer"] { left: auto; width: auto; }
+  .square > span { font-size: 29px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .atmosphere * { animation: none !important; }
+  .robotLids { opacity: 0; }
+  .robotReaction { opacity: .18; }
+}
